@@ -1,13 +1,5 @@
 <resources>
-    <string name="app_name">AppStore</string>
-    <string name="open">open</string>
-    <string name="close">close</string>
-
-    <string-array name="tab_names">
-        <item>首页</item>
-        <item>应用</item>
-    </string-array>
-
+    <string name="app_name">CoordinatorLayoutDemo</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -97,4 +89,5 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="action_settings">Settings</string>
 </resources>
