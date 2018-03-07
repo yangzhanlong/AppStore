@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
+    <!--只剩有一个容器， 因为需要显示四个不同的界面
+        数据加载中， 加载失败， 加载成功，空界面
+        并且四个界面不能共存，特定时间点只能显示一个界面-->
 
 </FrameLayout>
