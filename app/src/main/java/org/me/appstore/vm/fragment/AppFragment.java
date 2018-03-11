@@ -1,6 +1,7 @@
 package org.me.appstore.vm.fragment;
 
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,10 @@ import java.util.List;
  */
 public class AppFragment extends BaseFragment {
     protected ListView listView;
+
+    public AppFragment(Context context) {
+        super(context);
+    }
 
     protected void showSuccess() {
         listView = (ListView) View.inflate(getContext(), R.layout.app_success, null);

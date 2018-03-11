@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public Fragment getItem(int position) {
-            return FragmentFactory.createFragment(position);
+            return FragmentFactory.createFragment(position, MainActivity.this);
         }
 
         @Override

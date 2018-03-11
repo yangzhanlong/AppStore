@@ -1,6 +1,7 @@
 package org.me.appstore.vm.fragment;
 
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,10 @@ import java.util.List;
 public class HomeFragment extends BaseFragment {
     // 展示 成功界面
     private RecyclerView recyclerView;
+
+    public HomeFragment(Context context) {
+        super(context);
+    }
 
     // 加载成功界面
     protected void showSuccess() {

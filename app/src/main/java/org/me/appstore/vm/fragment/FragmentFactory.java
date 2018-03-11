@@ -1,5 +1,6 @@
 package org.me.appstore.vm.fragment;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 
 /**
@@ -11,14 +12,14 @@ import android.support.v4.app.Fragment;
 public class FragmentFactory {
 
     //创建Fragment
-    public static Fragment createFragment(int position) {
+    public static Fragment createFragment(int position, Context context) {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new HomeFragment();
+                fragment = new HomeFragment(context);
                 break;
             case 1:
-                fragment = new AppFragment();
+                fragment = new AppFragment(context);
                 break;
         }
         return fragment;
