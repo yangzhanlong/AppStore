@@ -1,12 +1,11 @@
 package org.me.appstore.vm;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import org.me.appstore.MyApplication;
 import org.me.appstore.R;
 
 /**
@@ -50,28 +49,42 @@ public abstract class CommonPager {
 
     public ViewGroup commonContainer;
 
-    public Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            onLoadingData = false;
-            isReadData = true;
-            super.handleMessage(msg);
 
-            if (isReadData) {
-                // 获取到数据，判断数据是否为空
-                if (isNullData) {
-                    // 加载空界面
-                    showEmpty();
+//    public final void runOnUiThread(Runnable action) {
+//        if (Thread.currentThread() != mUiThread) {
+//            mHandler.post(action);
+//        } else {
+//            action.run();
+//        }
+//    }
+
+    /**
+     * 确保代码在主线程中执行
+     */
+    public void runOnUiThread(){
+        Runnable action = new Runnable() {
+            @Override
+            public void run() {
+                onLoadingData = false;
+                isReadData = true;
+
+                if (isReadData) {
+                    // 获取到数据，判断数据是否为空
+                    if (isNullData) {
+                        // 加载空界面
+                        showEmpty();
+                    } else {
+                        // 加载成功界面
+                        showSuccess();
+                    }
                 } else {
-                    // 加载成功界面
-                    showSuccess();
+                    // 没有获取到数据, 显示错误界面
+                    showError();
                 }
-            } else {
-                // 没有获取到数据, 显示错误界面
-                showError();
             }
-        }
-    };
+        };
+        MyApplication.getHandler().post(action);
+    }
 
     public CommonPager(Context context) {
         this.context = context;

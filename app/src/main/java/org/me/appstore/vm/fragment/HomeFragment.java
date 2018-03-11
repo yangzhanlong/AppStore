@@ -45,7 +45,8 @@ public class HomeFragment extends BaseFragment {
             public void run() {
                 SystemClock.sleep(2000);
 
-                pager.handler.sendEmptyMessage(10);
+                pager.runOnUiThread();
+                //pager.handler.sendEmptyMessage(10);
             }
         }).start();
     }

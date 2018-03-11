@@ -2,6 +2,7 @@ package org.me.appstore;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 /**
@@ -10,6 +11,11 @@ import android.util.Log;
 
 public class MyApplication extends Application {
     private static Context context;
+    private static Handler handler;
+
+    public static Handler getHandler() {
+        return handler;
+    }
 
     public static Context getContext() {
         return context;
@@ -18,8 +24,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         Log.i("d", "dddddd");
-        if (context == null) {
-            context = getApplicationContext();
-        }
+        context = getApplicationContext();
+        handler = new Handler();
     }
 }

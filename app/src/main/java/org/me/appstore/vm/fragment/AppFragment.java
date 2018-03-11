@@ -40,7 +40,8 @@ public class AppFragment extends BaseFragment {
             public void run() {
                 super.run();
                 SystemClock.sleep(2000);
-                pager.handler.sendEmptyMessage(10);
+                pager.runOnUiThread();
+                //pager.handler.sendEmptyMessage(10);
             }
         }.start();
     }
