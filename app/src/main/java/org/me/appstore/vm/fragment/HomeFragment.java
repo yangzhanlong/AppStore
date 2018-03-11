@@ -34,8 +34,8 @@ public class HomeFragment extends BaseFragment {
         testData();
         recyclerView.setAdapter(new HomeAdapter());
 
-        fragment_container.removeAllViews();
-        fragment_container.addView(recyclerView);
+        pager.commonContainer.removeAllViews();
+        pager.commonContainer.addView(recyclerView);
     }
 
     // 耗时操作
@@ -45,7 +45,7 @@ public class HomeFragment extends BaseFragment {
             public void run() {
                 SystemClock.sleep(2000);
 
-                handler.sendEmptyMessage(10);
+                pager.handler.sendEmptyMessage(10);
             }
         }).start();
     }

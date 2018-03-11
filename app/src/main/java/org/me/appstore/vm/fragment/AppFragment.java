@@ -30,8 +30,8 @@ public class AppFragment extends BaseFragment {
         testData();
         listView.setAdapter(new AppAdapter());
 
-        fragment_container.removeAllViews();
-        fragment_container.addView(listView);
+        pager.commonContainer.removeAllViews();
+        pager.commonContainer.addView(listView);
     }
 
     protected void loadData() {
@@ -40,7 +40,7 @@ public class AppFragment extends BaseFragment {
             public void run() {
                 super.run();
                 SystemClock.sleep(2000);
-                handler.sendEmptyMessage(10);
+                pager.handler.sendEmptyMessage(10);
             }
         }.start();
     }
