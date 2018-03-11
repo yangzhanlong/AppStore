@@ -27,8 +27,16 @@ public abstract class BaseFragment extends Fragment {
     // 搜索到结果后，判断是否能够满足我们的要求，通过读取官方文档判断是否满足要求。
     // 在读官方文档是要注意特殊地方（使用的限制条件），关注：Note
 
+    // 2、不停的切换Fragment，都会重新走界面流程
+    // 如果当前fragment已经开始进行数据加载了，多次的开启会倒置线程的重复创建。
+
+    // 3、流程的开启有两种情况：第一次加载，数据读取出错
+    // 在切换Fragment时，如果完成了第一次加载，以后只有当数据读取出错时才会走流程
+
+    private boolean onLoadingData = false;
+
     // 是否获取到数据
-    protected boolean isReadData = true;
+    protected boolean isReadData = false;
     // 数据是否为空
     protected boolean isNullData = false;
     // 四个界面
@@ -42,7 +50,10 @@ public abstract class BaseFragment extends Fragment {
     protected Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            onLoadingData = false;
+            isReadData = true;
             super.handleMessage(msg);
+
             if (isReadData) {
                 // 获取到数据，判断数据是否为空
                 if (isNullData) {
@@ -84,6 +95,10 @@ public abstract class BaseFragment extends Fragment {
 
     // 动态界面加载流程的起点
     private void dynamic() {
+        if (onLoadingData || isReadData) {
+            return;
+        }
+        onLoadingData = true;
         showProgress();
         loadData();
     }
