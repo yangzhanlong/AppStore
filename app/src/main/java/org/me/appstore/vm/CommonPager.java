@@ -66,8 +66,6 @@ public abstract class CommonPager {
             @Override
             public void run() {
                 onLoadingData = false;
-                isReadData = true;
-
                 if (isReadData) {
                     // 获取到数据，判断数据是否为空
                     if (isNullData) {

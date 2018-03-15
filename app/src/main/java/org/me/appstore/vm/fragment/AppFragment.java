@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.me.appstore.R;
 
@@ -40,6 +39,7 @@ public class AppFragment extends BaseFragment {
             public void run() {
                 super.run();
                 SystemClock.sleep(2000);
+                // 更新界面
                 pager.runOnUiThread();
                 //pager.handler.sendEmptyMessage(10);
             }
@@ -73,9 +73,9 @@ public class AppFragment extends BaseFragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            View inflate = View.inflate(AppFragment.this.getContext(),R.layout.item_home,null);
-            TextView tv = (TextView) inflate.findViewById(R.id.id_num);
-            tv.setText(mDatas.get(i));
+            View inflate = View.inflate(AppFragment.this.getContext(),R.layout.item_home, null);
+//            TextView tv = (TextView) inflate.findViewById(R.id.id_num);
+//            tv.setText(mDatas.get(i));
             return inflate;
         }
     }

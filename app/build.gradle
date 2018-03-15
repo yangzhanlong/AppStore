@@ -27,4 +27,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:26.0.0-alpha1'
+    compile files('libs/gson-2.7.jar')
+    compile files('libs/okhttp-3.4.1.jar')
+    compile files('libs/okio-1.10.0.jar')
 }
