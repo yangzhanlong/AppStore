@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.me.appstore.Constants;
@@ -148,6 +149,13 @@ public class HomeFragment extends BaseFragment {
 
             public void setData(AppInfo data) {
                 binding.setApp(data);
+                // http://localhost:8080/GooglePlayServer/image?name=
+                StringBuffer buffer = new StringBuffer(Constants.HOST);
+                buffer.append(Constants.IMAGE);
+                HashMap<String, Object> param = new HashMap<>();
+                param.put("name", data.iconUrl);
+                buffer.append(HttpUtils.getUrlParamsByMap(param));
+                Glide.with(getContext()).load(buffer.toString()).into(binding.itemAppinfoIvIcon);
             }
         }
     }
