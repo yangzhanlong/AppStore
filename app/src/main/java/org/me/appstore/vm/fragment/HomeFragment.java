@@ -16,7 +16,8 @@ import com.google.gson.Gson;
 
 import org.me.appstore.Constants;
 import org.me.appstore.R;
-import org.me.appstore.databinding.ItemHomeBinding;
+
+import org.me.appstore.databinding.ItemAppinfoBinding;
 import org.me.appstore.module.net.AppInfo;
 import org.me.appstore.module.net.HomeInfo;
 import org.me.appstore.utils.HttpUtils;
@@ -121,7 +122,7 @@ public class HomeFragment extends BaseFragment {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
-                    parent.getContext()).inflate(R.layout.item_home, parent,
+                    parent.getContext()).inflate(R.layout.item_appinfo, parent,
                     false));
             return holder;
         }
@@ -138,12 +139,11 @@ public class HomeFragment extends BaseFragment {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            ItemHomeBinding binding;
+            ItemAppinfoBinding binding;
             ImageView icon;
 
             public MyViewHolder(View view) {
                 super(view);
-                icon = (ImageView) view.findViewById(R.id.item_appinfo_iv_icon);
                 binding = DataBindingUtil.bind(view);
             }
 

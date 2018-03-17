@@ -2,6 +2,7 @@ package org.me.appstore.module.net;
 
 /**
  * Created by user on 2018/3/12.
+ * 应用信息封装
  */
 
 public class AppInfo {
