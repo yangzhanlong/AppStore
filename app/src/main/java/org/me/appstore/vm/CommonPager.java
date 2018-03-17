@@ -108,15 +108,13 @@ public abstract class CommonPager {
     // 数据加载中
     public void showProgress() {
         loading = View.inflate(context, R.layout.pager_loading, null);
-        commonContainer.removeAllViews();
-        commonContainer.addView(loading);
+        changeViewTo(loading);
     }
 
     // 加载错误界面
     public void showError() {
         error = View.inflate(context, R.layout.pager_error, null);
-        commonContainer.removeAllViews();
-        commonContainer.addView(error);
+        changeViewTo(error);
         // 重新获取数据
         error.findViewById(R.id.error_btn_retry).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,8 +127,7 @@ public abstract class CommonPager {
     // 加载空界面
     public void showEmpty() {
         empty = View.inflate(context, R.layout.pager_empty, null);
-        commonContainer.removeAllViews();
-        commonContainer.addView(empty);
+        changeViewTo(empty);
     }
 
     // 加载成功界面
@@ -138,6 +135,11 @@ public abstract class CommonPager {
 
     // 耗时操作
     public abstract void loadData();
+
+    public void changeViewTo(View view) {
+        commonContainer.removeAllViews();
+        commonContainer.addView(view);
+    }
 }
 
 

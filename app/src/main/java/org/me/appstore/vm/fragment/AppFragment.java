@@ -3,9 +3,7 @@ package org.me.appstore.vm.fragment;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,16 +16,13 @@ import org.me.appstore.R;
 import org.me.appstore.databinding.ItemAppinfoBinding;
 import org.me.appstore.module.net.AppInfo;
 import org.me.appstore.utils.HttpUtils;
+import org.me.appstore.vm.RecyclerViewFactory;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * 应用
@@ -42,13 +37,9 @@ public class AppFragment extends BaseFragment {
     }
 
     protected void showSuccess() {
-        recyclerView = (RecyclerView) View.inflate(getContext(), R.layout.home_success, null);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
+        recyclerView = RecyclerViewFactory.createVertical();
         recyclerView.setAdapter(new AppAdapter());
-
-        pager.commonContainer.removeAllViews();
-        pager.commonContainer.addView(recyclerView);
+        pager.changeViewTo(recyclerView);
     }
 
     protected void loadData() {
@@ -57,44 +48,23 @@ public class AppFragment extends BaseFragment {
 //                3、发送请求
 //                4、结果处理
 
-        OkHttpClient client = new OkHttpClient();
-        Request.Builder builder = new Request.Builder();
-        StringBuffer buffer = new StringBuffer(Constants.HOST);
-        buffer.append(Constants.APP);
-        final HashMap<String, Object> param = new HashMap<>();
-        param.put("index", 0);
-        buffer.append(HttpUtils.getUrlParamsByMap(param));
-        final Request request = new Request.Builder().get().url(buffer.toString()).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
+        final HashMap<String, Object> params = new HashMap<>();
+        params.put("index", 0);
+        final Request request = HttpUtils.getRequest(Constants.APP, params);
+        Call call = HttpUtils.getClient().newCall(request);
+        call.enqueue(new BaseCallBack(pager) {
             @Override
-            public void onFailure(Call call, IOException e) {
-                pager.isReadData = false;
-                pager.runOnUiThread();
-            }
+            protected void onSuccess(Gson gson, String jsonString) {
+                apps = gson.fromJson(jsonString, new TypeToken<List<AppInfo>>() {
+                }.getType());
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.code() == 200) {
-                    pager.isReadData = true;
-                    String jsonString = response.body().string();
-                    Log.i("jsonstring", jsonString);
-                    Gson gson = new Gson();
-                    apps = gson.fromJson(jsonString, new TypeToken<List<AppInfo>>() {
-                    }.getType());
-
-                    if (apps != null && apps.size() > 0) {
-                        pager.isNullData = false;
-                    } else {
-                        pager.isNullData = true;
-                    }
+                if (apps != null && apps.size() > 0) {
+                    pager.isNullData = false;
                 } else {
-                    pager.isReadData = false;
+                    pager.isNullData = true;
                 }
-                pager.runOnUiThread();
             }
         });
-
     }
 
     class AppAdapter extends RecyclerView.Adapter<AppAdapter.ItemHolder> {
