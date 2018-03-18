@@ -8,14 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.me.appstore.Constants;
+import org.me.appstore.MyApplication;
 import org.me.appstore.R;
 import org.me.appstore.databinding.ItemAppinfoBinding;
 import org.me.appstore.module.net.AppInfo;
 import org.me.appstore.utils.HttpUtils;
+import org.me.appstore.vm.DataCache;
 import org.me.appstore.vm.RecyclerViewFactory;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class AppFragment extends BaseFragment {
     // 展示 成功界面
     private RecyclerView recyclerView;
     private List<AppInfo> apps;
+    private String key;
 
     public AppFragment(Context context) {
         super(context);
@@ -43,28 +45,44 @@ public class AppFragment extends BaseFragment {
     }
 
     protected void loadData() {
-//                1、创建联网用的客户端
-//                2、创建发送请求（get或post，链接，参数）
-//                3、发送请求
-//                4、结果处理
-
         final HashMap<String, Object> params = new HashMap<>();
         params.put("index", 0);
+
+        key = Constants.APP + ".0";
+        String json = DataCache.getDataFromLocal(key);
+        if (json != null) {
+            parserJson(json);
+            pager.runOnUiThread();
+        } else {
+            LoadNetData(params);
+        }
+    }
+
+    private void LoadNetData(HashMap<String, Object> params) {
         final Request request = HttpUtils.getRequest(Constants.APP, params);
         Call call = HttpUtils.getClient().newCall(request);
         call.enqueue(new BaseCallBack(pager) {
             @Override
-            protected void onSuccess(Gson gson, String jsonString) {
-                apps = gson.fromJson(jsonString, new TypeToken<List<AppInfo>>() {
-                }.getType());
-
-                if (apps != null && apps.size() > 0) {
-                    pager.isNullData = false;
-                } else {
-                    pager.isNullData = true;
-                }
+            protected void onSuccess(String jsonString) {
+                // 缓存数据到内存
+                MyApplication.getDataCache().put(key, jsonString);
+                // 缓存数据到文件
+                DataCache.cacheFile(key, jsonString);
+                parserJson(jsonString);
             }
         });
+    }
+
+    private void parserJson(String jsonString) {
+        pager.isReadData = true;
+        apps = MyApplication.getGson().fromJson(jsonString, new TypeToken<List<AppInfo>>() {
+        }.getType());
+
+        if (apps != null && apps.size() > 0) {
+            pager.isNullData = false;
+        } else {
+            pager.isNullData = true;
+        }
     }
 
     class AppAdapter extends RecyclerView.Adapter<AppAdapter.ItemHolder> {

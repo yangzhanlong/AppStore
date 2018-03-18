@@ -1,5 +1,6 @@
 package org.me.appstore.vm.activity;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.me.appstore.R;
+import org.me.appstore.utils.PermissionUtils;
 import org.me.appstore.vm.fragment.FragmentFactory;
 
 
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        PermissionUtils.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
         initView();
     }
 

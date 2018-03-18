@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Android23后需要对明感权限进行使用前的校验
  */
 
-public class PermissionUtil {
+public class PermissionUtils {
 
     /**
      * 权限校验
@@ -37,6 +37,4 @@ public class PermissionUtil {
             }
         }
     }
-
-
 }

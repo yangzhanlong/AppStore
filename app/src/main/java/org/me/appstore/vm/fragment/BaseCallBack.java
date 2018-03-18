@@ -2,8 +2,6 @@ package org.me.appstore.vm.fragment;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-
 import org.me.appstore.vm.CommonPager;
 
 import java.io.IOException;
@@ -39,9 +37,8 @@ public abstract class BaseCallBack implements okhttp3.Callback {
             pager.isReadData = true;
             String jsonString = response.body().string();
             Log.i("onResponse : ", jsonString);
-            Gson gson = new Gson();
             
-            onSuccess(gson, jsonString);
+            onSuccess(jsonString);
         } else {
             pager.isReadData = false;
         }
@@ -50,6 +47,6 @@ public abstract class BaseCallBack implements okhttp3.Callback {
         pager.runOnUiThread();
     }
 
-    protected abstract void onSuccess(Gson gson, String jsonString);
+    protected abstract void onSuccess(String jsonString);
 
 }
