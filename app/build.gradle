@@ -23,6 +23,7 @@ android {
     }
 }
 
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -30,9 +31,12 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:design:26.0.0-alpha1'
+    compile 'com.android.support:design:25.3.1'
     compile files('libs/gson-2.7.jar')
     compile files('libs/okhttp-3.4.1.jar')
     compile files('libs/okio-1.10.0.jar')
     compile files('libs/glide-3.7.0.jar')
+
+    compile( name: 'AndroidImageSlider-1.1.5', ext: 'aar')
+
 }
