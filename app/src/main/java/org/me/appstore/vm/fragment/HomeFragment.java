@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
@@ -26,6 +27,7 @@ import org.me.appstore.utils.HttpUtils;
 import org.me.appstore.utils.UIUtils;
 import org.me.appstore.vm.DataCache;
 import org.me.appstore.vm.RecyclerViewFactory;
+import org.me.appstore.vm.holder.BaseHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -121,12 +123,13 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
-    class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    class HomeAdapter extends RecyclerView.Adapter<BaseHolder> {
 
         // 如果加载其他样式的Item我们需要做的工作
-        // 判断具体有哪些样式
+        // 判断具体有哪些样式 轮播  条目  加载更多
         private static final int NORMAL = 0;
         private static final int CAROUSEL = 1;
+        private static final int LOADMORE = 2;
 
         // 步骤
         // 1. 添加getItemViewType,依据position去判断当前条目的样式
@@ -135,17 +138,18 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public int getItemViewType(int position) {
-            switch (position) {
-                case 0:
-                    return CAROUSEL;
-                default:
-                    return NORMAL;
+            if (position == 0) {
+                return CAROUSEL;
+            } else if (position == homeInfo.list.size() + 1) {
+                return LOADMORE;
+            } else {
+                return NORMAL;
             }
         }
 
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RecyclerView.ViewHolder holder = null;
+        public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            BaseHolder holder = null;
             switch (viewType) {
                 case NORMAL:
                     holder = new MyViewHolder(LayoutInflater.from(
@@ -157,23 +161,31 @@ public class HomeFragment extends BaseFragment {
                             parent.getContext()).inflate(R.layout.home_fragment_carousel, parent,
                             false));
                     break;
-
+                case LOADMORE:
+                    holder = new LoadMoreHolder(LayoutInflater.from(
+                            parent.getContext()).inflate(R.layout.item_loadmore, parent,
+                            false));
+                    break;
             }
 
             return holder;
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(BaseHolder holder, int position) {
             switch (holder.getItemViewType()) {
                 case NORMAL:
                     AppInfo appInfo = homeInfo.list.get(position - 1); // 这里必须要 -1，不然会越界
-                    ((MyViewHolder) holder).setData(appInfo);
+                    holder.setData(appInfo);
                     break;
                 case CAROUSEL:
                     // 轮播
-                    ((CarouselHolder) holder).setData(homeInfo.picture);
+                    holder.setData(homeInfo.picture);
                     break;
+                case LOADMORE:
+                    // 加载更多，设置loading状态
+                    // 最后一项显示出来，这样就不用判断 RecyclerView 是否滚动到底部
+                    holder.setData(LoadMoreHolder.LOADING);
                 default:
                     break;
             }
@@ -181,14 +193,14 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public int getItemCount() {
-            return homeInfo != null ? homeInfo.list.size() + 1 : 0; // +1 是因为多了轮播图
+            return homeInfo != null ? homeInfo.list.size() + 1 + 1: 0; // +1是因为多了轮播图  +1加载更多条目
         }
 
 
         /**
          * 轮播使用的 holder
          */
-        class CarouselHolder extends RecyclerView.ViewHolder {
+        class CarouselHolder extends BaseHolder<List<String>> {
 
             private final SliderLayout sliderLayout;
 
@@ -228,7 +240,7 @@ public class HomeFragment extends BaseFragment {
             }
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        class MyViewHolder extends BaseHolder<AppInfo> {
             ItemAppinfoBinding binding;
             ImageView icon;
 
@@ -246,6 +258,39 @@ public class HomeFragment extends BaseFragment {
                 param.put("name", data.iconUrl);
                 buffer.append(HttpUtils.getUrlParamsByMap(param));
                 Glide.with(getContext()).load(buffer.toString()).into(binding.itemAppinfoIvIcon);
+            }
+        }
+
+        /**
+         * 加载更多的 holder
+         */
+        class LoadMoreHolder extends BaseHolder<Integer> {
+            public static final int LOADING = 1;
+            public static final int ERROR = -1;
+            public static final int NULL = 0;
+
+            LinearLayout loading;
+            LinearLayout retry;
+            public LoadMoreHolder(View itemView) {
+                super(itemView);
+                loading = (LinearLayout) itemView.findViewById(R.id.item_loadmore_container_loading);
+                retry = (LinearLayout) itemView.findViewById(R.id.item_loadmore_container_retry);
+            }
+
+            // 根据设置的状态值显示状态
+            public void setData(Integer state) {
+                loading.setVisibility(View.GONE);
+                retry.setVisibility(View.GONE);
+                switch (state) {
+                    case LOADING:
+                        loading.setVisibility(View.VISIBLE);
+                        break;
+                    case ERROR:
+                        retry.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
