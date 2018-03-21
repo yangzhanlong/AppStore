@@ -4,6 +4,7 @@ package org.me.appstore.vm.fragment;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -29,11 +30,15 @@ import org.me.appstore.vm.DataCache;
 import org.me.appstore.vm.RecyclerViewFactory;
 import org.me.appstore.vm.holder.BaseHolder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 首页
@@ -186,6 +191,7 @@ public class HomeFragment extends BaseFragment {
                     // 加载更多，设置loading状态
                     // 最后一项显示出来，这样就不用判断 RecyclerView 是否滚动到底部
                     holder.setData(LoadMoreHolder.LOADING);
+                    loadMoreData((LoadMoreHolder) holder);
                 default:
                     break;
             }
@@ -193,7 +199,7 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public int getItemCount() {
-            return homeInfo != null ? homeInfo.list.size() + 1 + 1: 0; // +1是因为多了轮播图  +1加载更多条目
+            return homeInfo != null ? homeInfo.list.size() + 1 + 1 : 0; // +1是因为多了轮播图  +1加载更多条目
         }
 
 
@@ -271,27 +277,138 @@ public class HomeFragment extends BaseFragment {
 
             LinearLayout loading;
             LinearLayout retry;
+
             public LoadMoreHolder(View itemView) {
                 super(itemView);
                 loading = (LinearLayout) itemView.findViewById(R.id.item_loadmore_container_loading);
                 retry = (LinearLayout) itemView.findViewById(R.id.item_loadmore_container_retry);
+
+                retry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadMoreData(LoadMoreHolder.this);
+                        setData(LOADING);
+                    }
+                });
             }
 
             // 根据设置的状态值显示状态
-            public void setData(Integer state) {
-                loading.setVisibility(View.GONE);
-                retry.setVisibility(View.GONE);
-                switch (state) {
-                    case LOADING:
-                        loading.setVisibility(View.VISIBLE);
-                        break;
-                    case ERROR:
-                        retry.setVisibility(View.VISIBLE);
-                        break;
-                    default:
-                        break;
+            public void setData(final Integer state) {
+                // 在线程更新界面
+                MyApplication.getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loading.setVisibility(View.GONE);
+                        retry.setVisibility(View.GONE);
+                        switch (state) {
+                            case LOADING:
+                                loading.setVisibility(View.VISIBLE);
+                                break;
+                            case ERROR:
+                                retry.setVisibility(View.VISIBLE);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+            }
+        }
+
+        /**
+         * 加载更多数据
+         *
+         * @param holder
+         */
+        private void loadMoreData(final LoadMoreHolder holder) {
+            // 加载本地
+            // 是否加载到数据
+            // 没加载到，获取网络数据
+            // 是否加载到数据
+            // 加载到，展示界面
+            // 没有加载到，重试界面显示
+
+            // 判断是否还有下一页数据
+            // 有，显示加载中条目
+            // 没有，不显示
+
+            //key:下一页开始的 index的值与集合数据大小相等
+            key = Constants.HOME + "." + homeInfo.list.size();
+            String json = DataCache.getDataFromLocal(key);
+            if (json == null) {
+                // 加载网络数据
+                OkHttpClient client = new OkHttpClient();
+                HashMap<String, Object> params = new HashMap<>();
+                params.put("index", homeInfo.list.size());
+                final Request request = HttpUtils.getRequest(Constants.HOME, params);
+                Call call = client.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        // 显示重试条目
+                        holder.setData(LoadMoreHolder.ERROR);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        // 判断是否获取到网络数据
+                        if (response.code() == 200) {
+                            String json = response.body().string();
+                            showNextPagerData(json, holder);
+                        } else {
+                            // 显示重试条目
+                            holder.setData(LoadMoreHolder.ERROR);
+                        }
+                    }
+                });
+
+            } else {
+                // 加载本地数据
+                showNextPagerData(json, holder);
+            }
+        }
+
+        /**
+         * 处理加载到的数据并展示
+         *
+         * @param json
+         * @param holder
+         */
+        private void showNextPagerData(String json, LoadMoreHolder holder) {
+            HomeInfo nextPagerInfo = MyApplication.getGson().fromJson(json, HomeInfo.class);
+            if (nextPagerInfo != null) {
+                List<AppInfo> nextAppInfoList = nextPagerInfo.list;
+                if (nextAppInfoList != null && nextAppInfoList.size() > 0) {
+                    // 在原来的集合添加更新的数据集合
+                    homeInfo.list.addAll(nextAppInfoList);
+                    SystemClock.sleep(2000);
+                    // 通知更新界面，需要在主线程更新
+                    MyApplication.getHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+                } else {
+                    holder.setData(LoadMoreHolder.NULL);
                 }
+            } else {
+                holder.setData(LoadMoreHolder.NULL);
             }
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
