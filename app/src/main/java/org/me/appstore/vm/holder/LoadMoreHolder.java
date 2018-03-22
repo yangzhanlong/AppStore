@@ -5,7 +5,7 @@ import android.widget.LinearLayout;
 
 import org.me.appstore.MyApplication;
 import org.me.appstore.R;
-import org.me.appstore.vm.adapter.HomeAdapter;
+import org.me.appstore.vm.adapter.BaseRecyclerViewAdapter;
 
 /**
  * Created by user on 2018/3/21.
@@ -21,7 +21,7 @@ public class LoadMoreHolder extends BaseHolder<Integer> {
     LinearLayout loading;
     LinearLayout retry;
 
-    public LoadMoreHolder(View itemView, final HomeAdapter adapter) {
+    public LoadMoreHolder(View itemView, final BaseRecyclerViewAdapter adapter) {
         super(itemView);
         loading = (LinearLayout) itemView.findViewById(R.id.item_loadmore_container_loading);
         retry = (LinearLayout) itemView.findViewById(R.id.item_loadmore_container_retry);
