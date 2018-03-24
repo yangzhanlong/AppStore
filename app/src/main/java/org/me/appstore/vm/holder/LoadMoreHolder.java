@@ -29,7 +29,7 @@ public class LoadMoreHolder extends BaseHolder<Integer> {
         retry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.loadMoreData(LoadMoreHolder.this);
+                adapter.loadMoreData();
                 setData(LOADING);
             }
         });

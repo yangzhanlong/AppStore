@@ -1,6 +1,5 @@
 package org.me.appstore.vm.adapter;
 
-import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -18,20 +17,11 @@ import org.me.appstore.module.net.AppInfo;
 import org.me.appstore.module.net.HomeInfo;
 import org.me.appstore.utils.HttpUtils;
 import org.me.appstore.utils.UIUtils;
-import org.me.appstore.vm.DataCache;
-import org.me.appstore.vm.holder.AppInfoHolder;
 import org.me.appstore.vm.holder.BaseHolder;
 import org.me.appstore.vm.holder.LoadMoreHolder;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by user on 2018/3/21.
@@ -44,13 +34,12 @@ public class HomeAdapter extends BaseRecyclerViewAdapter<AppInfo> {
 
     // 如果加载其他样式的Item我们需要做的工作
     // 判断具体有哪些样式 轮播  条目  加载更多
-    private static final int NORMAL = 0;
     private static final int CAROUSEL = 1;
-    private static final int LOADMORE = 2;
 
     public HomeAdapter(HomeInfo homeInfo, FragmentActivity activity) {
         this.homeInfo = homeInfo;
         this.activity = activity;
+        this.datas = homeInfo.list;
     }
 
     // 步骤
@@ -62,7 +51,7 @@ public class HomeAdapter extends BaseRecyclerViewAdapter<AppInfo> {
     public int getItemViewType(int position) {
         if (position == 0) {
             return CAROUSEL;
-        } else if (position == homeInfo.list.size() + 1) {
+        } else if (position == datas.size() + 1) {
             return LOADMORE;
         } else {
             return NORMAL;
@@ -71,52 +60,57 @@ public class HomeAdapter extends BaseRecyclerViewAdapter<AppInfo> {
 
     @Override
     public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        BaseHolder holder = null;
-        switch (viewType) {
-            case NORMAL:
-                holder = new AppInfoHolder(LayoutInflater.from(
-                        parent.getContext()).inflate(R.layout.item_appinfo, parent,
-                        false));
-                break;
-            case CAROUSEL:
-                holder = new CarouselHolder(LayoutInflater.from(
-                        parent.getContext()).inflate(R.layout.home_fragment_carousel, parent,
-                        false));
-                break;
-            case LOADMORE:
-                holder = new LoadMoreHolder(LayoutInflater.from(
-                        parent.getContext()).inflate(R.layout.item_loadmore, parent,
-                        false), this);
-                break;
+        BaseHolder holder = super.onCreateViewHolder(parent, viewType);
+        if (viewType == CAROUSEL) {
+            holder = new CarouselHolder(LayoutInflater.from(
+                    parent.getContext()).inflate(R.layout.home_fragment_carousel, parent,
+                    false));
         }
-
         return holder;
     }
 
     @Override
     public void onBindViewHolder(BaseHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
         switch (holder.getItemViewType()) {
-            case NORMAL:
-                AppInfo appInfo = homeInfo.list.get(position - 1); // 这里必须要 -1，不然会越界
-                holder.setData(appInfo);
-                break;
             case CAROUSEL:
                 // 轮播
                 holder.setData(homeInfo.picture);
                 break;
-            case LOADMORE:
-                // 加载更多，设置loading状态
-                // 最后一项显示出来，这样就不用判断 RecyclerView 是否滚动到底部
-                holder.setData(LoadMoreHolder.LOADING);
-                loadMoreData((LoadMoreHolder) holder);
             default:
                 break;
         }
     }
 
     @Override
+    public String getPath() {
+        return Constants.HOME;
+    }
+
+    @Override
+    protected List<AppInfo> getNextAppInfoList(String json) {
+        HomeInfo nextPagerInfo = MyApplication.getGson().fromJson(json, HomeInfo.class);
+        if (nextPagerInfo != null) {
+            return nextPagerInfo.list;
+        } else {
+            loadMoreHolder.setData(LoadMoreHolder.NULL);
+        }
+        return null;
+    }
+
+    @Override
+    protected int getLayoutID() {
+        return R.layout.item_appinfo;
+    }
+
+    @Override
+    protected AppInfo getItemPosition(int position) {
+        return datas.get(position - 1); // -1是因为有轮播,不然会越界
+    }
+
+    @Override
     public int getItemCount() {
-        return homeInfo != null ? homeInfo.list.size() + 1 + 1 : 0; // +1是因为多了轮播图  +1加载更多条目
+        return homeInfo != null ? datas.size() + 1 + 1 : 0; // +1是因为多了轮播图  +1加载更多条目
     }
 
     /**
@@ -159,88 +153,6 @@ public class HomeAdapter extends BaseRecyclerViewAdapter<AppInfo> {
                 sliderView.image(buffer.toString());
                 sliderLayout.addSlider(sliderView);
             }
-        }
-    }
-
-    /**
-     * 加载更多数据
-     *
-     * @param holder
-     */
-    public void loadMoreData(final LoadMoreHolder holder) {
-        // 加载本地
-        // 是否加载到数据
-        // 没加载到，获取网络数据
-        // 是否加载到数据
-        // 加载到，展示界面
-        // 没有加载到，重试界面显示
-
-        // 判断是否还有下一页数据
-        // 有，显示加载中条目
-        // 没有，不显示
-
-        //key:下一页开始的 index的值与集合数据大小相等
-        String key = Constants.HOME + "." + homeInfo.list.size();
-        String json = DataCache.getDataFromLocal(key);
-        if (json == null) {
-            // 加载网络数据
-            OkHttpClient client = new OkHttpClient();
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("index", homeInfo.list.size());
-            final Request request = HttpUtils.getRequest(Constants.HOME, params);
-            Call call = client.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    // 显示重试条目
-                    holder.setData(LoadMoreHolder.ERROR);
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    // 判断是否获取到网络数据
-                    if (response.code() == 200) {
-                        String json = response.body().string();
-                        showNextPagerData(json, holder);
-                    } else {
-                        // 显示重试条目
-                        holder.setData(LoadMoreHolder.ERROR);
-                    }
-                }
-            });
-
-        } else {
-            // 加载本地数据
-            showNextPagerData(json, holder);
-        }
-    }
-
-    /**
-     * 处理加载到的数据并展示
-     *
-     * @param json
-     * @param holder
-     */
-    private void showNextPagerData(String json, LoadMoreHolder holder) {
-        HomeInfo nextPagerInfo = MyApplication.getGson().fromJson(json, HomeInfo.class);
-        if (nextPagerInfo != null) {
-            List<AppInfo> nextAppInfoList = nextPagerInfo.list;
-            if (nextAppInfoList != null && nextAppInfoList.size() > 0) {
-                // 在原来的集合添加更新的数据集合
-                homeInfo.list.addAll(nextAppInfoList);
-                SystemClock.sleep(2000);
-                // 通知更新界面，需要在主线程更新
-                MyApplication.getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
-            } else {
-                holder.setData(LoadMoreHolder.NULL);
-            }
-        } else {
-            holder.setData(LoadMoreHolder.NULL);
         }
     }
 }
