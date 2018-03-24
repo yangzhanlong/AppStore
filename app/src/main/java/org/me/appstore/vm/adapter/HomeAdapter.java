@@ -37,9 +37,9 @@ public class HomeAdapter extends BaseRecyclerViewAdapter<AppInfo> {
     private static final int CAROUSEL = 1;
 
     public HomeAdapter(HomeInfo homeInfo, FragmentActivity activity) {
+        super(homeInfo.list);
         this.homeInfo = homeInfo;
         this.activity = activity;
-        this.datas = homeInfo.list;
     }
 
     // 步骤

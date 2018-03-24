@@ -1,6 +1,5 @@
 package org.me.appstore.vm.adapter;
 
-
 import com.google.gson.reflect.TypeToken;
 
 import org.me.appstore.Constants;
@@ -11,19 +10,13 @@ import org.me.appstore.module.net.AppInfo;
 import java.util.List;
 
 /**
- * Created by user on 2018/3/21.
- * 应用适配器
+ * Created by user on 2018/3/24.
+ * 游戏界面
  */
-
-public class AppAdapter extends BaseRecyclerViewAdapter<AppInfo> {
-    public AppAdapter(List<AppInfo> apps) {
+public class GameAdapter extends BaseRecyclerViewAdapter {
+    public GameAdapter(List<AppInfo> apps) {
         super(apps);
     }
-
-    // 步骤
-    // 1. 添加getItemViewType,依据position去判断当前条目的样式
-    // 2. 修改onCreateViewHolder, 依据样式加载不同的layout
-    // 3. 修改onBindViewHolder, 依据样式绑定不同的数据
 
     @Override
     public int getItemViewType(int position) {
@@ -34,8 +27,8 @@ public class AppAdapter extends BaseRecyclerViewAdapter<AppInfo> {
     }
 
     @Override
-    public int getItemCount() {
-        return datas != null ? datas.size() + 1 : 0; // +1加载更多条目
+    protected Object getItemPosition(int position) {
+        return datas.get(position);
     }
 
     @Override
@@ -44,18 +37,18 @@ public class AppAdapter extends BaseRecyclerViewAdapter<AppInfo> {
     }
 
     @Override
-    protected AppInfo getItemPosition(int position) {
-        return datas.get(position);
-    }
-
-    @Override
     public String getPath() {
-        return Constants.APP;
+        return Constants.GAME;
     }
 
     @Override
     protected List<AppInfo> getNextAppInfoList(String json) {
         return MyApplication.getGson().fromJson(json, new TypeToken<List<AppInfo>>() {
         }.getType());
+    }
+
+    @Override
+    public int getItemCount() {
+        return datas.size() + 1;
     }
 }

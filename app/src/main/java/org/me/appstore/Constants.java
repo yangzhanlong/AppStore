@@ -9,5 +9,6 @@ public class Constants {
     public static final String HOME = "home";
     public static final String IMAGE = "image";
     public static final String APP = "app";
+    public static final String GAME = "game";
     public static final long DURATION = 5 * 60 * 3600;
 }

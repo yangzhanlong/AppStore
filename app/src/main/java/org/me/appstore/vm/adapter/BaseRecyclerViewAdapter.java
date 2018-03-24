@@ -38,6 +38,9 @@ public abstract class BaseRecyclerViewAdapter<D> extends RecyclerView.Adapter<Ba
     protected static final int LOADMORE = 2;
     protected LoadMoreHolder loadMoreHolder;
 
+    public BaseRecyclerViewAdapter(List<D> datas) {
+        this.datas = datas;
+    }
 
     @Override
     public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {

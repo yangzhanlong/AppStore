@@ -21,6 +21,9 @@ public class FragmentFactory {
             case 1:
                 fragment = new AppFragment(context);
                 break;
+            case 2:
+                fragment = new GameFragment(context);
+                break;
         }
         return fragment;
     }
