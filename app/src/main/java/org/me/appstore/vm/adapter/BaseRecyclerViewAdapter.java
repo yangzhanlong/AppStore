@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import org.me.appstore.Constants;
 import org.me.appstore.MyApplication;
 import org.me.appstore.R;
 import org.me.appstore.module.net.AppInfo;
@@ -13,6 +14,7 @@ import org.me.appstore.vm.DataCache;
 import org.me.appstore.vm.holder.AppInfoHolder;
 import org.me.appstore.vm.holder.BaseHolder;
 import org.me.appstore.vm.holder.LoadMoreHolder;
+import org.me.appstore.vm.holder.SubjectHolder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -47,9 +49,16 @@ public abstract class BaseRecyclerViewAdapter<D> extends RecyclerView.Adapter<Ba
         BaseHolder holder = null;
         switch (viewType) {
             case NORMAL:
-                holder = new AppInfoHolder(LayoutInflater.from(
-                        parent.getContext()).inflate(getLayoutID(), parent,
-                        false));
+                // 处理通用条目的布局加载
+                if (getPath().equals(Constants.SUBJECT)) {
+                    holder = new SubjectHolder(LayoutInflater.from(
+                            parent.getContext()).inflate(getLayoutID(), parent,
+                            false));
+                } else {
+                    holder = new AppInfoHolder(LayoutInflater.from(
+                            parent.getContext()).inflate(getLayoutID(), parent,
+                            false));
+                }
                 break;
             case LOADMORE:
                 holder = loadMoreHolder = new LoadMoreHolder(LayoutInflater.from(

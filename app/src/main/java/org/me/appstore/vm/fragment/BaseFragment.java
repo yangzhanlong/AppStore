@@ -12,6 +12,7 @@ import org.me.appstore.vm.CommonPager;
 
 /**
  * Created by user on 2018/3/11.
+ *
  */
 
 public abstract class BaseFragment extends Fragment {

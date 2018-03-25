@@ -6,21 +6,18 @@ import org.me.appstore.Constants;
 import org.me.appstore.MyApplication;
 import org.me.appstore.R;
 import org.me.appstore.module.net.AppInfo;
+import org.me.appstore.module.net.SubjectInfo;
 
 import java.util.List;
 
 /**
  * Created by user on 2018/3/24.
- * 游戏界面
+ * 专题的适配器
  */
-public class GameAdapter extends BaseRecyclerViewAdapter<AppInfo> {
-    public GameAdapter(List<AppInfo> apps) {
-        super(apps);
-    }
+public class SubjectAdapter extends BaseRecyclerViewAdapter<SubjectInfo> {
 
-    @Override
-    protected AppInfo getItemPosition(int position) {
-        return datas.get(position);
+    public SubjectAdapter(List<SubjectInfo> datas) {
+        super(datas);
     }
 
     @Override
@@ -32,23 +29,27 @@ public class GameAdapter extends BaseRecyclerViewAdapter<AppInfo> {
     }
 
     @Override
+    protected SubjectInfo getItemPosition(int position) {
+        return datas.get(position);
+    }
+
+    @Override
     protected int getLayoutID() {
-        return R.layout.item_appinfo;
+        return R.layout.item_subject;
     }
 
     @Override
     public String getPath() {
-        return Constants.GAME;
+        return Constants.SUBJECT;
     }
 
     @Override
     protected List<AppInfo> getNextAppInfoList(String json) {
-        return MyApplication.getGson().fromJson(json, new TypeToken<List<AppInfo>>() {
-        }.getType());
+        return MyApplication.getGson().fromJson(json, new TypeToken<List<SubjectInfo>>(){}.getType());
     }
 
     @Override
     public int getItemCount() {
-        return datas.size() + 1;
+        return datas != null ? datas.size() + 1: 0;
     }
 }
