@@ -85,7 +85,7 @@ public class CategoryFragment extends BaseFragment {
                 category.title = title;
                 category.isTitle = true;
                 categories.add(category);
-                
+
                 JSONArray infos = infoObjects.getJSONArray("infos");
                 for (int j = 0; j < infos.length(); j++) {
                     JSONObject infoObject = infos.getJSONObject(j);

@@ -30,6 +30,9 @@ public class FragmentFactory {
             case 4:
                 fragment = new CategoryFragment(context);
                 break;
+            case 5:
+                fragment = new RecommendFragment(context);
+                break;
         }
         return fragment;
     }
