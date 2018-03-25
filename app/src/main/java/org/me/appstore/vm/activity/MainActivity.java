@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setAdapter(new ViewPageAdapter(getSupportFragmentManager()));
 
         tabLayout.setupWithViewPager(viewPager);
+
+        // 设置 Tablayout 滚动模式 (条目多的时候可以水平滚动)
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
     @Override

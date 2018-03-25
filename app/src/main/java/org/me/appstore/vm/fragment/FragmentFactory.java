@@ -33,6 +33,9 @@ public class FragmentFactory {
             case 5:
                 fragment = new RecommendFragment(context);
                 break;
+            case 6:
+                fragment = new HotFragment(context);
+                break;
         }
         return fragment;
     }

@@ -14,4 +14,5 @@ public class Constants {
     public static final String SUBJECT = "subject";
     public static final String CATEGORY="category";
     public static final String RECOMMEND = "recommend";
+    public static final String HOT="hot";
 }
