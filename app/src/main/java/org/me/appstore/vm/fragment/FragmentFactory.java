@@ -27,6 +27,9 @@ public class FragmentFactory {
             case 3:
                 fragment = new SubjectFragment(context);
                 break;
+            case 4:
+                fragment = new CategoryFragment(context);
+                break;
         }
         return fragment;
     }

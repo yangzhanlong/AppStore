@@ -12,4 +12,5 @@ public class Constants {
     public static final String GAME = "game";
     public static final long DURATION = 5 * 60 * 3600;
     public static final String SUBJECT = "subject";
+    public static final String CATEGORY="category";
 }
