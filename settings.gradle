@@ -1,1 +1,1 @@
-include ':app', ':databindingdemo', ':coordinatorlayoutdemo'
+include ':app', ':databindingdemo', ':coordinatorlayoutdemo', ':collapsingtoolbarlayoutdemo'

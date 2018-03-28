@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="org.me.appstore.utils.StringUtil" />
+        <import type="org.me.appstore.R"/>
+        <variable
+            name="app"
+            type="org.me.appstore.module.net.AppInfo" />
+    </data>
+
+
+    <FrameLayout
+        android:id="@+id/item_detail_des"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp">
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@android:color/white"-->
+            <!--android:orientation="vertical"-->
+            <!--android:padding="5dp">-->
+
+            <!--&lt;!&ndash; 简介 &ndash;&gt;-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="简介"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="16sp" />-->
+
+            <!--&lt;!&ndash; 描述详情区域 &ndash;&gt;-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/app_detail_des_tv_des"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:text="@{app.des}"-->
+                <!--android:textColor="@android:color/darker_gray"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--&lt;!&ndash; 作者区域 &ndash;&gt;-->
+
+            <!--<RelativeLayout-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="70dp">-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@{StringUtil.getString(R.string.detail_author,app.author)}"-->
+                    <!--android:textColor="@android:color/darker_gray"-->
+                    <!--android:textSize="14sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/app_detail_des_iv_arrow"-->
+                    <!--android:layout_width="15dp"-->
+                    <!--android:layout_height="15dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:src="@drawable/arrow_down" />-->
+            <!--</RelativeLayout>-->
+        <!--</LinearLayout>-->
+
+    </FrameLayout>
+</layout>

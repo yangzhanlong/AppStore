@@ -1,5 +1,7 @@
 package org.me.appstore.module.net;
 
+import java.util.List;
+
 /**
  * Created by user on 2018/3/12.
  * 应用信息封装
@@ -26,5 +28,12 @@ public class AppInfo {
     public long size;
     public String downloadUrl;
     public String des;
+    // 详情信息
+    public String downloadNum;
+    public String version;
+    public String date;
+    public String author;
 
+    public List<String> screen;
+    public List<SafeInfo> safe;
 }

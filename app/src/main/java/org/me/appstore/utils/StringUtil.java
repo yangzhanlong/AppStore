@@ -1,5 +1,6 @@
 package org.me.appstore.utils;
 
+import android.support.annotation.StringRes;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -37,6 +38,13 @@ public class StringUtil {
 			last = str;
 		}
 		return true;
+	}
+
+	/**
+	 * 得到String.xml中的字符串信息,并使用参数进行字符串替换
+	 */
+	public static String getString(@StringRes int id, Object... formatArgs) {
+		return UIUtils.getResources().getString(id, formatArgs);
 	}
 
 	/**

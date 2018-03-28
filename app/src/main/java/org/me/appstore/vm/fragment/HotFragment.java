@@ -33,6 +33,7 @@ public class HotFragment extends BaseFragment {
 
     @Override
     protected void showSuccess() {
+        // 不能使用 scrollerview 无法滚动
         NestedScrollView scrollView = new NestedScrollView(UIUtils.getContext());
         FlowLayout flowLayout = new FlowLayout(UIUtils.getContext());
         for (String item : hots) {
