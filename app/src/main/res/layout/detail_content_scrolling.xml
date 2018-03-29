@@ -10,12 +10,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--&lt;!&ndash;应用的安全部分的容器&ndash;&gt;-->
-        <!--<include layout="@layout/item_detail_safe" />-->
-        <!--&lt;!&ndash;应用的截图部分的容器&ndash;&gt;-->
-        <!--<include layout="@layout/item_detail_pic" />-->
-        <!--&lt;!&ndash;应用的描述部分的容器&ndash;&gt;-->
-        <!--<include layout="@layout/item_detail_des" />-->
+        <!--应用的安全部分的容器-->
+        <include layout="@layout/item_detail_safe" />
+        <!--应用的截图部分的容器-->
+        <include layout="@layout/item_detail_pic" />
+        <!--应用的描述部分的容器-->
+        <include layout="@layout/item_detail_des" />
 
     </LinearLayout>
 

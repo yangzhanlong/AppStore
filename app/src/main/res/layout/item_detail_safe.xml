@@ -7,40 +7,40 @@
 
     <!-- 上面部分 -->
 
-    <!--<RelativeLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="4dp">-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp">
 
-        <!--<ImageView-->
-            <!--android:id="@+id/app_detail_safe_iv_arrow"-->
-            <!--android:layout_width="15dp"-->
-            <!--android:layout_height="15dp"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginRight="15dp"-->
-            <!--android:src="@drawable/arrow_down" />-->
+        <!-- 图片容器 -->
 
-        <!--&lt;!&ndash; 图片容器 &ndash;&gt;-->
+        <ImageView
+            android:id="@+id/app_detail_safe_iv_arrow"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/arrow_down" />
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/app_detail_safe_pic_container"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:paddingBottom="5dp"-->
-            <!--android:paddingLeft="10dp"-->
-            <!--android:paddingTop="5dp">-->
-        <!--</LinearLayout>-->
-    <!--</RelativeLayout>-->
+        <LinearLayout
+            android:id="@+id/app_detail_safe_pic_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp">
+        </LinearLayout>
+    </RelativeLayout>
 
-    <!--&lt;!&ndash; 下面部分 &ndash;&gt;-->
+    <!-- 下面部分 -->
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/app_detail_safe_des_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical">-->
-    <!--</LinearLayout>-->
+    <LinearLayout
+        android:id="@+id/app_detail_safe_des_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    </LinearLayout>
 
 </LinearLayout>

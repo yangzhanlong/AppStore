@@ -18,6 +18,7 @@ import org.me.appstore.vm.DataCache;
 import org.me.appstore.vm.fragment.BaseCallBack;
 import org.me.appstore.vm.holder.BaseHolder;
 import org.me.appstore.vm.holder.ItemDetailInfoHolder;
+import org.me.appstore.vm.holder.ItemDetailSafeHolder;
 
 import java.util.HashMap;
 
@@ -73,10 +74,15 @@ public class DetailActivity extends AppCompatActivity {
         // 添加标题
         toolbar.setTitle(appInfos.name);
 
+        // 设置应用详情数据
         BaseHolder holder;
         holder = new ItemDetailInfoHolder(view.findViewById(R.id.item_detail_info));
         holder.setData(appInfos);
 
+
+        // 设置安全信息
+        holder = new ItemDetailSafeHolder(view.findViewById(R.id.item_detail_safe));
+        holder.setData(appInfos.safe);
         pager.changeViewTo(view);
     }
 

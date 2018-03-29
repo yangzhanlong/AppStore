@@ -3,10 +3,10 @@ package org.me.appstore.vm.holder;
 import android.databinding.DataBindingUtil;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
-
+import org.me.appstore.R;
 import org.me.appstore.databinding.ItemDetailInfoBinding;
 import org.me.appstore.module.net.AppInfo;
+import org.me.appstore.utils.ImageUtils;
 import org.me.appstore.utils.UIUtils;
 
 /**
@@ -24,6 +24,11 @@ public class ItemDetailInfoHolder extends BaseHolder<AppInfo> {
     @Override
     public void setData(AppInfo data) {
         binding.setApp(data);
-        Glide.with(UIUtils.getContext()).load(getImageUrl(data.iconUrl)).into(binding.appDetailInfoIvIcon);
+        ImageUtils.loadIntoUseFitWidth(
+                UIUtils.getContext(),
+                getImageUrl(data.iconUrl),
+                R.drawable.ic_default,
+                binding.appDetailInfoIvIcon);
+        //Glide.with(UIUtils.getContext()).load(getImageUrl(data.iconUrl)).into(binding.appDetailInfoIvIcon);
     }
 }
