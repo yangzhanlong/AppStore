@@ -17,6 +17,7 @@ import org.me.appstore.vm.CommonPager;
 import org.me.appstore.vm.DataCache;
 import org.me.appstore.vm.fragment.BaseCallBack;
 import org.me.appstore.vm.holder.BaseHolder;
+import org.me.appstore.vm.holder.ItemDetailImageHolder;
 import org.me.appstore.vm.holder.ItemDetailInfoHolder;
 import org.me.appstore.vm.holder.ItemDetailSafeHolder;
 
@@ -83,6 +84,10 @@ public class DetailActivity extends AppCompatActivity {
         // 设置安全信息
         holder = new ItemDetailSafeHolder(view.findViewById(R.id.item_detail_safe));
         holder.setData(appInfos.safe);
+
+        // 设置图片信息
+        holder = new ItemDetailImageHolder(view.findViewById(R.id.item_detail_pic));
+        holder.setData(appInfos.screen);
         pager.changeViewTo(view);
     }
 
