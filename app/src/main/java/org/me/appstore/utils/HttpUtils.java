@@ -20,6 +20,8 @@ public class HttpUtils {
         // http://localhost:8080/GooglePlayServer/home?index=0
         String buffer = Constants.HOST + path +
                 HttpUtils.getUrlParamsByMap(params);
+
+        LogUtil.s(buffer);
         return new Request.Builder().get().url(buffer).build();
     }
 

@@ -36,6 +36,7 @@ public class AppInfoHolder extends BaseHolder<AppInfo> {
                 // Toast.makeText(UIUtils.getContext(), data.packageName, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(UIUtils.getContext(), DetailActivity.class);
                 intent.putExtra("packageName", data.packageName);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 UIUtils.getContext().startActivity(intent);
             }
         });

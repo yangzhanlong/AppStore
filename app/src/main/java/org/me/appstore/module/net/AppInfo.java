@@ -36,4 +36,12 @@ public class AppInfo {
 
     public List<String> screen;
     public List<SafeInfo> safe;
+
+    @Override
+    public String toString() {
+        return "AppInfo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

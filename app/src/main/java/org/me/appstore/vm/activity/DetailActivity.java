@@ -7,6 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.me.appstore.Constants;
 import org.me.appstore.MyApplication;
 import org.me.appstore.R;
@@ -37,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     private String key;
     private AppInfo appInfos;
     private Toolbar toolbar;
+    private String json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,6 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         packageName = intent.getStringExtra("packageName");
-        LogUtil.s(packageName);
     }
 
     @Override
@@ -112,6 +114,7 @@ public class DetailActivity extends AppCompatActivity {
         key = Constants.DETAIL + packageName;
         String json = DataCache.getDataFromLocal(key);
         if (json != null) {
+            LogUtil.s(json);
             parserJson(json);
             pager.runOnUiThread();
         } else {
@@ -120,16 +123,28 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void LoadNetData(HashMap<String, Object> params) {
+        LogUtil.s("LoadNetData");
         final Request request = HttpUtils.getRequest(Constants.DETAIL, params);
         Call call = HttpUtils.getClient().newCall(request);
         call.enqueue(new BaseCallBack(pager) {
             @Override
             protected void onSuccess(String jsonString) {
+                try {
+                    JSONObject object = new JSONObject(jsonString);
+                    String str = object.get("des").toString();
+                    String str1 = str.replace(" ", "");
+                    object.put("des", str1);
+                    json = object.toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                LogUtil.s(json);
                 // 缓存数据到内存
-                MyApplication.getDataCache().put(key, jsonString);
+                MyApplication.getDataCache().put(key, json);
                 // 缓存数据到文件
-                DataCache.cacheFile(key, jsonString);
-                parserJson(jsonString);
+                DataCache.cacheFile(key, json);
+                parserJson(json);
             }
         });
     }

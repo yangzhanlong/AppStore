@@ -1,5 +1,7 @@
 package org.me.appstore.vm.holder;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,12 @@ import java.util.List;
  * 详情界面安全信息holder
  */
 
-public class ItemDetailSafeHolder extends BaseHolder<List<SafeInfo>> {
+public class ItemDetailSafeHolder extends BaseHolder<List<SafeInfo>> implements View.OnClickListener {
     ImageView mAppDetailSafeIvArrow;
     LinearLayout mAppDetailSafePicContainer;
     LinearLayout mAppDetailSafeDesContainer;
+    private int height;
+    private boolean isClosed = true;
 
     public ItemDetailSafeHolder(View itemView) {
         super(itemView);
@@ -30,6 +34,12 @@ public class ItemDetailSafeHolder extends BaseHolder<List<SafeInfo>> {
         mAppDetailSafeIvArrow = (ImageView) itemView.findViewById(R.id.app_detail_safe_iv_arrow);
         mAppDetailSafePicContainer = (LinearLayout) itemView.findViewById(R.id.app_detail_safe_pic_container);
         mAppDetailSafeDesContainer = (LinearLayout) itemView.findViewById(R.id.app_detail_safe_des_container);
+
+        // 初始化容器的高度为0
+        setHeight(0);
+
+        // 缩放点击事件
+        itemView.setOnClickListener(this);
     }
 
     @Override
@@ -67,5 +77,51 @@ public class ItemDetailSafeHolder extends BaseHolder<List<SafeInfo>> {
 
             mAppDetailSafeDesContainer.addView(linearLayout);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (isClosed) {
+            // 设置容器原始高度
+            setWholeHeight();
+            // 设置高度渐变动画
+            setAnimator(0, height);
+            // 设置图片旋转动画
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mAppDetailSafeIvArrow, "rotation", 0, 180);
+            animator.setDuration(300).start();
+        } else {
+            setWholeHeight();
+            setAnimator(height, 0);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mAppDetailSafeIvArrow, "rotation", 180, 0);
+            animator.setDuration(300).start();
+        }
+
+        isClosed = !isClosed;
+    }
+
+    private void setWholeHeight() {
+        if (height == 0) {
+            mAppDetailSafeDesContainer.measure(0, 0);
+            height = mAppDetailSafeDesContainer.getMeasuredHeight();
+        }
+    }
+
+    private void setAnimator(int start, int end) {
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
+        valueAnimator.setDuration(300);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setHeight((Integer) animation.getAnimatedValue());
+            }
+        });
+
+        valueAnimator.start();
+    }
+
+    public void setHeight(int height) {
+        ViewGroup.LayoutParams layoutParams = mAppDetailSafeDesContainer.getLayoutParams();
+        layoutParams.height = height;
+        mAppDetailSafeDesContainer.setLayoutParams(layoutParams);
     }
 }
