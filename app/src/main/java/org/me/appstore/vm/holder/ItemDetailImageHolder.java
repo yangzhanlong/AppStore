@@ -7,7 +7,6 @@ import android.widget.LinearLayout;
 
 import org.me.appstore.R;
 import org.me.appstore.utils.ImageUtils;
-import org.me.appstore.utils.LogUtil;
 import org.me.appstore.utils.UIUtils;
 
 import java.util.List;
@@ -36,7 +35,6 @@ public class ItemDetailImageHolder extends BaseHolder<List<String>> {
             // 宽度已知-->屏幕的1/3
             // 获取屏幕的宽度
             int screenWidth = UIUtils.getResources().getDisplayMetrics().widthPixels;
-            LogUtil.s(screenWidth+ "");
             int width = screenWidth / 3;
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
