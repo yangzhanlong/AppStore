@@ -2,6 +2,7 @@ package org.me.appstore;
 
 /**
  * Created by user on 2018/3/12.
+ * 常量类
  */
 
 public class Constants {
@@ -16,4 +17,5 @@ public class Constants {
     public static final String RECOMMEND = "recommend";
     public static final String HOT="hot";
     public static final String DETAIL="detail";
+    public static final String DOWNLOAD ="download";
 }

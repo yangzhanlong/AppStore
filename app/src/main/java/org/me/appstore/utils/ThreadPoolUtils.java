@@ -49,7 +49,7 @@ public class ThreadPoolUtils {
     /**
      * 自定义的任务
      */
-    public static class Task implements Runnable {
+    public static abstract class Task implements Runnable {
 
         @Override
         public void run() {
@@ -68,7 +68,6 @@ public class ThreadPoolUtils {
             });
         }
 
-        private void work() {
-        }
+        public abstract void work();
     }
 }
