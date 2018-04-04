@@ -1,11 +1,13 @@
 package org.me.appstore.vm.holder.download;
 
 import org.me.appstore.Constants;
+import org.me.appstore.MyApplication;
 import org.me.appstore.utils.FileUtils;
 import org.me.appstore.utils.HttpUtils;
 import org.me.appstore.utils.IOUtils;
 import org.me.appstore.utils.LogUtil;
 import org.me.appstore.utils.ThreadPoolUtils;
+import org.me.appstore.vm.holder.AppInfoHolder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,6 +76,7 @@ public class DownloadTask extends ThreadPoolUtils.Task {
                     LogUtil.s("size:" + downloadInfo.size);
                     if (downloadInfo.downloadSize == downloadInfo.size) {
                         setState(State.DOWNLOAD_COMPLETED);
+                        break;
                     }
                 }
             } else {
@@ -91,5 +94,13 @@ public class DownloadTask extends ThreadPoolUtils.Task {
 
     public void setState(int state) {
         downloadInfo.state = state;
+        MyApplication.getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                for (AppInfoHolder holder : DownloadManager.APP_INFO_HOLDERS) {
+                    holder.update(downloadInfo);
+                }
+            }
+        });
     }
 }

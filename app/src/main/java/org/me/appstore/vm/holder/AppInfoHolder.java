@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
-import com.orm.SugarDb;
 
 import org.me.appstore.databinding.ItemAppinfoBinding;
 import org.me.appstore.module.db.AppEntities;
@@ -34,7 +33,7 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
     public AppInfoHolder(View view) {
         super(view);
         binding = DataBindingUtil.bind(view);
-        binding.itemAppinfoDownloadIv.setOnClickListener(this);
+        DownloadManager.APP_INFO_HOLDERS.add(this);
     }
 
     public void setData(final AppInfo data) {
@@ -52,8 +51,8 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
             }
         });
 
-        SugarDb db = new SugarDb(UIUtils.getContext());
-        db.onCreate(db.getDB());
+        //SugarDb db = new SugarDb(UIUtils.getContext());
+        //db.onCreate(db.getDB());
 
 
         // 从集合里获取下载信息
@@ -74,6 +73,9 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
 
         // 设置下载状态信息
         setTextView(downloadInfo.state);
+
+        // 下载点击监听
+        binding.itemAppinfoDownloadIv.setOnClickListener(this);
     }
 
     private void readDatabase(DownloadInfo info) {
@@ -121,6 +123,15 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
     @Override
     public void onClick(View v) {
         DownloadTask task = new DownloadTask(DownloadManager.DOWNLOAD_CACHES.get(binding.getApp().id));
-        ThreadPoolUtils.execute(task);
+        boolean execute = ThreadPoolUtils.execute(task);
+        if (!execute) {
+            setTextView(State.DOWNLOAD_WAIT); // 等待状态
+        }
+    }
+
+    public void update(DownloadInfo downloadInfo) {
+        if (binding.getApp().id == downloadInfo.appId) {
+            setTextView(downloadInfo.state);
+        }
     }
 }
