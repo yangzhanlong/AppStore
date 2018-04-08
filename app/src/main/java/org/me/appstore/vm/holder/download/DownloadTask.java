@@ -1,13 +1,11 @@
 package org.me.appstore.vm.holder.download;
 
 import org.me.appstore.Constants;
-import org.me.appstore.MyApplication;
 import org.me.appstore.utils.FileUtils;
 import org.me.appstore.utils.HttpUtils;
 import org.me.appstore.utils.IOUtils;
 import org.me.appstore.utils.LogUtil;
 import org.me.appstore.utils.ThreadPoolUtils;
-import org.me.appstore.vm.holder.AppInfoHolder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +25,7 @@ import okhttp3.Response;
 public class DownloadTask extends ThreadPoolUtils.Task {
     private DownloadInfo downloadInfo;
     public DownloadTask(DownloadInfo info) {
+        super(info.appId);
         this.downloadInfo = info;
     }
 
@@ -68,6 +67,10 @@ public class DownloadTask extends ThreadPoolUtils.Task {
 
                 // 读取输入流写到文件中
                 while ((len = inputStream.read(buffer)) != -1) { // 判断是否读到结束
+                    // 如果是暂停状态，暂停下载
+                    if (downloadInfo.state == State.DOWNLOAD_STOP) {
+                        break;
+                    }
                     outputStream.write(buffer, 0, len);
                     // 累积下载大小
                     downloadInfo.downloadSize += len;
@@ -94,13 +97,6 @@ public class DownloadTask extends ThreadPoolUtils.Task {
 
     public void setState(int state) {
         downloadInfo.state = state;
-        MyApplication.getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                for (AppInfoHolder holder : DownloadManager.APP_INFO_HOLDERS) {
-                    holder.update(downloadInfo);
-                }
-            }
-        });
+        DownloadManager.getInstance().notifyChangeUi(downloadInfo);
     }
 }

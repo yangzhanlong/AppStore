@@ -10,6 +10,7 @@ import org.me.appstore.databinding.ItemAppinfoBinding;
 import org.me.appstore.module.db.AppEntities;
 import org.me.appstore.module.net.AppInfo;
 import org.me.appstore.utils.AppUtils;
+import org.me.appstore.utils.FileUtils;
 import org.me.appstore.utils.ThreadPoolUtils;
 import org.me.appstore.utils.UIUtils;
 import org.me.appstore.vm.activity.DetailActivity;
@@ -20,7 +21,6 @@ import org.me.appstore.vm.holder.download.State;
 
 import java.util.List;
 
-import static org.me.appstore.utils.UIUtils.getContext;
 
 /**
  * Created by user on 2018/3/21.
@@ -39,7 +39,7 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
     public void setData(final AppInfo data) {
         binding.setApp(data);
         // http://localhost:8080/GooglePlayServer/image?name=
-        Glide.with(getContext()).load(getImageUrl(data.iconUrl)).into(binding.itemAppinfoIvIcon);
+        Glide.with(UIUtils.getContext()).load(getImageUrl(data.iconUrl)).into(binding.itemAppinfoIvIcon);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,10 +122,35 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        DownloadTask task = new DownloadTask(DownloadManager.DOWNLOAD_CACHES.get(binding.getApp().id));
-        boolean execute = ThreadPoolUtils.execute(task);
-        if (!execute) {
-            setTextView(State.DOWNLOAD_WAIT); // 等待状态
+        DownloadInfo downloadInfo = DownloadManager.DOWNLOAD_CACHES.get(binding.getApp().id);
+        switch (downloadInfo.state) {
+            case State.DOWNLOAD_COMPLETED:
+                // 下载完成---->安装
+                AppUtils.installApp(UIUtils.getContext(), FileUtils.getApk(downloadInfo.packageName));
+                break;
+            case State.INSTALL_ALREADY:
+                // 安装完成--->打开
+                AppUtils.openApp(UIUtils.getContext(),downloadInfo.packageName);
+                break;
+            case State.DOWNLOADING:
+                // 下载中---->暂停
+                downloadInfo.state = State.DOWNLOAD_STOP;
+                setTextView(downloadInfo.state);
+                break;
+            case State.DOWNLOAD_WAIT:
+                // 等待---->取消等待
+                DownloadManager.removeQueueTask(downloadInfo.appId);
+                break;
+            case State.DOWNLOAD_STOP:
+                // 暂停---->继续下载
+            case State.DOWNLOAD_NOT:
+            case State.DOWNLOAD_ERROR:
+                DownloadTask task = new DownloadTask(DownloadManager.DOWNLOAD_CACHES.get(binding.getApp().id));
+                boolean execute = ThreadPoolUtils.execute(task);
+                if (!execute) {
+                    setTextView(State.DOWNLOAD_WAIT); // 等待状态
+                }
+                break;
         }
     }
 

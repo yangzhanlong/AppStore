@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
@@ -45,8 +47,15 @@ public class AppUtils
 	public static void installApp(Context context, File apkFile)
 	{
 		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+		//判断是否是AndroidN以及更高的版本
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			Uri contentUri = FileProvider.getUriForFile(context, "org.me.appstore.fileProvider", apkFile);
+			intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+		} else {
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+		}
 		context.startActivity(intent);
 	}
 

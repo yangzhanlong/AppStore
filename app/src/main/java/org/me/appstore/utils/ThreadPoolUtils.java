@@ -47,9 +47,36 @@ public class ThreadPoolUtils {
     }
 
     /**
+     * 删除等待任务
+     * @param id
+     */
+    public static boolean cancelWaitTask(long id) {
+        Task target = null;
+        for (Task task : TASKS) {
+            if (task.id == id) {
+                target = task;
+                break;
+            }
+        }
+
+        if (target != null) {
+            TASKS.remove(target);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * 自定义的任务
      */
     public static abstract class Task implements Runnable {
+        // 使用id去标识任务，当存在排队等待的任务时可以依据id进行删除操作
+        public long id;
+
+        public Task(long id) {
+            this.id = id;
+        }
 
         @Override
         public void run() {
