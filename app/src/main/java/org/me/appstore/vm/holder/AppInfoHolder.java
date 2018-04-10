@@ -148,6 +148,7 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
                 DownloadTask task = new DownloadTask(DownloadManager.DOWNLOAD_CACHES.get(binding.getApp().id));
                 boolean execute = ThreadPoolUtils.execute(task);
                 if (!execute) {
+                    downloadInfo.state = State.DOWNLOAD_WAIT;
                     setTextView(State.DOWNLOAD_WAIT); // 等待状态
                 }
                 break;

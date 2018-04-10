@@ -6,7 +6,7 @@ package org.me.appstore;
  */
 
 public class Constants {
-    public static final String HOST = "http://192.168.0.6:8080/GooglePlayServer/";
+    public static final String HOST = "http://192.168.0.7:8080/GooglePlayServer/";
     public static final String HOME = "home";
     public static final String IMAGE = "image";
     public static final String APP = "app";
