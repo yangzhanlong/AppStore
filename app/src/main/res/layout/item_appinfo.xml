@@ -81,34 +81,35 @@
 
                 <!-- 下载部分 -->
 
-                <LinearLayout
-                    android:layout_width="70dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="70dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:gravity="center"-->
+                    <!--android:orientation="vertical">-->
 
-                    <ImageView
-                        android:id="@+id/item_appinfo_download_iv"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_download" />
+                    <!--<ImageView-->
+                        <!--android:id="@+id/item_appinfo_download_iv"-->
+                        <!--android:layout_width="32dp"-->
+                        <!--android:layout_height="32dp"-->
+                        <!--android:src="@drawable/ic_download" />-->
 
-                    <TextView
-                        android:id="@+id/item_appinfo_download_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="下载" />
-                </LinearLayout>
-                <!--com.itheima.appstorev2.views.ProgressView
-                    android:id="@+id/item_appinfo_progressview"
-                    android:layout_width="70dp"
+                    <!--<TextView-->
+                        <!--android:id="@+id/item_appinfo_download_tv"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:text="下载" />-->
+                <!--</LinearLayout>-->
+
+                <org.me.appstore.views.ProgressBar
+                    android:id="@+id/item_progress_view"
+                    android:layout_width="55dp"
                     android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
                     android:gravity="center"
                     android:orientation="vertical"
-                    ></com.itheima.appstorev2.views.ProgressView-->
+                    android:layout_marginRight="16dp"
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
 
             <!-- 分割线 -->

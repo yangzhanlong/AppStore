@@ -2,6 +2,7 @@ package org.me.appstore.vm.holder;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -54,7 +55,6 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
         //SugarDb db = new SugarDb(UIUtils.getContext());
         //db.onCreate(db.getDB());
 
-
         // 从集合里获取下载信息
         DownloadInfo downloadInfo = DownloadManager.DOWNLOAD_CACHES.get(data.id);
         if (downloadInfo == null) {
@@ -72,10 +72,11 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
         }
 
         // 设置下载状态信息
-        setTextView(downloadInfo.state);
+        setProgressView(downloadInfo);
 
         // 下载点击监听
-        binding.itemAppinfoDownloadIv.setOnClickListener(this);
+        //binding.itemAppinfoDownloadIv.setOnClickListener(this);
+        binding.itemProgressView.setOnClickListener(this);
     }
 
     private void readDatabase(DownloadInfo info) {
@@ -94,29 +95,44 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
         }
     }
 
-    public void setTextView(int state) {
-        switch (state) {
+    public void setProgressView(DownloadInfo downloadInfo) {
+        String text = "";
+        long downloadSize = 0;
+        switch (downloadInfo.state) {
             case State.INSTALL_ALREADY:
-                binding.itemAppinfoDownloadTv.setText("打开");
+                text = "打开";
+                downloadSize = downloadInfo.downloadSize;
                 break;
             case State.DOWNLOAD_NOT:
-                binding.itemAppinfoDownloadTv.setText("下载");
+                text = "下载";
+                downloadSize = 0;
                 break;
             case State.DOWNLOAD_COMPLETED:
-                binding.itemAppinfoDownloadTv.setText("安装");
+                text = "安装";
+                downloadSize = downloadInfo.downloadSize;
                 break;
             case State.DOWNLOAD_WAIT:
-                binding.itemAppinfoDownloadTv.setText("等待");
+                text = "等待";
+                downloadSize = downloadInfo.downloadSize;
                 break;
             case State.DOWNLOAD_STOP:
-                binding.itemAppinfoDownloadTv.setText("继续");
+                text = "继续";
+                downloadSize = downloadInfo.downloadSize;
                 break;
             case State.DOWNLOADING:
-                binding.itemAppinfoDownloadTv.setText("进度展示");
+                downloadSize = downloadInfo.downloadSize;
                 break;
             case State.DOWNLOAD_ERROR:
-                binding.itemAppinfoDownloadTv.setText("重试");
+                text = "重试";
+                downloadSize = downloadInfo.downloadSize;
                 break;
+        }
+
+        // 设置进度
+        binding.itemProgressView.setPercent(downloadSize * 1.0f / downloadInfo.size);
+        // 设置文本
+        if (!TextUtils.isEmpty(text)) {
+            binding.itemProgressView.setText(text);
         }
     }
 
@@ -135,7 +151,7 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
             case State.DOWNLOADING:
                 // 下载中---->暂停
                 downloadInfo.state = State.DOWNLOAD_STOP;
-                setTextView(downloadInfo.state);
+                setProgressView(downloadInfo);
                 break;
             case State.DOWNLOAD_WAIT:
                 // 等待---->取消等待
@@ -148,8 +164,7 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
                 DownloadTask task = new DownloadTask(DownloadManager.DOWNLOAD_CACHES.get(binding.getApp().id));
                 boolean execute = ThreadPoolUtils.execute(task);
                 if (!execute) {
-                    downloadInfo.state = State.DOWNLOAD_WAIT;
-                    setTextView(State.DOWNLOAD_WAIT); // 等待状态
+                    task.setState(State.DOWNLOAD_WAIT); // 等待状态
                 }
                 break;
         }
@@ -157,7 +172,7 @@ public class AppInfoHolder extends BaseHolder<AppInfo> implements View.OnClickLi
 
     public void update(DownloadInfo downloadInfo) {
         if (binding.getApp().id == downloadInfo.appId) {
-            setTextView(downloadInfo.state);
+            setProgressView(downloadInfo);
         }
     }
 }

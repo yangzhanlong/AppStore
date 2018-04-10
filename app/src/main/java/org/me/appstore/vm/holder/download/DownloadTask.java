@@ -5,7 +5,6 @@ import org.me.appstore.module.db.AppEntities;
 import org.me.appstore.utils.FileUtils;
 import org.me.appstore.utils.HttpUtils;
 import org.me.appstore.utils.IOUtils;
-import org.me.appstore.utils.LogUtil;
 import org.me.appstore.utils.ThreadPoolUtils;
 
 import java.io.File;
@@ -76,9 +75,9 @@ public class DownloadTask extends ThreadPoolUtils.Task {
                     outputStream.write(buffer, 0, len);
                     // 累积下载大小
                     downloadInfo.downloadSize += len;
+                    // 更新进度
+                    DownloadManager.getInstance().notifyChangeUi(downloadInfo);
 
-                    LogUtil.s("downsize:" + downloadInfo.downloadSize);
-                    LogUtil.s("size:" + downloadInfo.size);
                     if (downloadInfo.downloadSize == downloadInfo.size) {
                         setState(State.DOWNLOAD_COMPLETED);
                         break;
